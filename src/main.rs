@@ -29,10 +29,14 @@ enum Commands {
         #[arg(short, long)]
         list: bool,
     },
-    Scan {
-        /// lists test values
+    /// scans for regex in global config
+    Hook {},
+    /// install the hooks
+    Install {
+        /// git config paths
         #[arg(short, long)]
-        list: bool,
+        repo: String,
+        secrets: String,
     },
 }
 
@@ -67,8 +71,16 @@ fn main() {
                 println!("Not printing testing lists...");
             }
         }
+        Some(Commands::Hook {}) => {
+            pre_commit_hook_scan(None);
+        }
+        Some(Commands::Install { repo, secrets }) => {
+            install_hooks(repo, secrets);
+        }
         None => {}
     }
 
     // Continued program logic goes here...
 }
+
+

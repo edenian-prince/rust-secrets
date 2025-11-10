@@ -1,6 +1,7 @@
 use colored::Colorize;
 use regex::Regex;
-use std::io::{BufRead, BufReader};
+use std::fs::OpenOptions;
+use std::io::{BufRead, BufReader, BufWriter, Write};
 use std::path::PathBuf;
 use std::process::Command;
 use std::{env, fs};
@@ -132,5 +133,34 @@ pub fn pre_commit_hook_scan(custom_patterns: Option<Regex>) {
     } else {
         println!("{}", "No secrets found.".green().bold());
         std::process::exit(0);
+    }
+}
+
+pub fn install_hooks(repo_url: &str, secrets_path: &str) {
+    write_git_regex_file(repo_url, secrets_path);
+
+    let mut git_template = env::home_dir().expect("Could not find home directory");
+    git_template.push(".git-template/hooks/pre-commit");
+
+    if git_template.is_file() {
+        println!("pre-commit hook exists; adding hook to it");
+
+        let file_result = OpenOptions::new()
+            .append(true)
+            .create(true)
+            .open(git_template);
+
+        let file = match file_result {
+            Ok(file) => file,
+            Err(e) => {
+                eprintln!("Failed to open file: {}", e);
+                return;
+            }
+        };
+
+        let mut writer = BufWriter::new(file);
+        writeln!(writer, "\ngit find hook").unwrap();
+    } else {
+        println!("pre-commit hook file not found... creating file")
     }
 }
