@@ -1,21 +1,29 @@
+use colored::Colorize;
 use regex::Regex;
-use std::error::Error;
-use std::io::{BufRead, BufReader, BufWriter, Write};
-use std::path::{self, Path, PathBuf};
+use std::io::{BufRead, BufReader};
+use std::path::PathBuf;
 use std::process::Command;
 use std::{env, fs};
 
-// pub fn get_staged_files() -> Vec<String> {
-//     let output = Command::new("git")
-//         .args(["diff", "--cached", "--name-only"])
-//         .output()
-//         .expect("failed to list staged files");
-//     String::from_utf8_lossy(&output.stdout)
-//         .lines()
-//         .map(|s: |s.to_string())
-//         .collect()
-// }
-//
+pub fn get_staged_files() -> Vec<String> {
+    let output = Command::new("git")
+        .args(["diff", "--cached", "--name-only"])
+        .output()
+        .expect("failed to list staged files");
+    String::from_utf8_lossy(&output.stdout)
+        .lines()
+        .map(|s| s.to_string())
+        .collect()
+}
+
+pub fn get_staged_content(path: &str) -> Option<String> {
+    let output = Command::new("git")
+        .args(["show", &format!(":{}", path)])
+        .output()
+        .expect("problems getting staged files!");
+    Some(String::from_utf8_lossy(&output.stdout).to_string())
+}
+
 // Write config from github to .gitconfig
 // it will clone the remote secrets repo and set up the inital .gitconfig
 // to be used in the Install Command
@@ -52,18 +60,16 @@ pub fn write_git_regex_file(repo_url: &str, secrets_path: &str) {
 }
 
 // Read in the .gitconfig and find the regex file(s), return a pathbuf
-pub fn read_git_regex_files() {
+pub fn read_git_regex_files() -> PathBuf {
     let output = Command::new("git")
         .args(["config", "--global", "--get", "git-find.regex-file"])
         .output()
         .expect("failed to find provider");
 
-    let path_str = String::from_utf8_lossy(&output.stdout).trim().to_string();
-    let path = PathBuf::from(path_str);
-    path;
+    PathBuf::from(String::from_utf8_lossy(&output.stdout).trim())
 }
 
-pub fn load_regex_from_file(path: &str) -> std::io::Result<Vec<Regex>> {
+pub fn load_regex_from_file(path: &PathBuf) -> std::io::Result<Vec<Regex>> {
     let file = fs::File::open(path)?;
     let reader = BufReader::new(file);
 
@@ -83,11 +89,48 @@ pub fn load_regex_from_file(path: &str) -> std::io::Result<Vec<Regex>> {
 }
 
 pub fn pre_commit_hook_scan(custom_patterns: Option<Regex>) {
-    let global_secret = read_git_regex_files();
+    // Read in the global regex - this will fail if it's is_empty
+    let global_secret_path = read_git_regex_files();
+    let global_secrets = load_regex_from_file(&global_secret_path);
 
     let mut patterns = Vec::new();
+    patterns.extend(global_secrets.unwrap());
 
     if let Some(re) = custom_patterns {
         patterns.push(re);
+    }
+
+    // now we need to flip through the staged git files and search for regex matches
+    let staged_files = get_staged_files();
+
+    let mut secrets_found = false;
+
+    for file in &staged_files {
+        if let Some(content) = get_staged_content(file) {
+            for re in patterns.iter() {
+                for (line_number, line) in content.lines().enumerate() {
+                    if re.is_match(line) {
+                        println!(
+                            "{} {} {} {} {}\n",
+                            "Pattern #".blue(),
+                            re.to_string().yellow(),
+                            "matched in".blue(),
+                            file.to_string().magenta(),
+                            format!("at line {}: {}", line_number + 1, line.red()).cyan()
+                        );
+                        secrets_found = true;
+                    }
+                }
+            }
+        } else {
+            eprintln!("Could not read staged content for {}", file)
+        }
+    }
+
+    if secrets_found {
+        eprintln!("{}", "Secret scan failed. Commit aborted.".red().bold());
+    } else {
+        println!("{}", "No secrets found.".green().bold());
+        std::process::exit(0);
     }
 }
