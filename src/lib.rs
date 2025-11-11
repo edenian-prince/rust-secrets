@@ -140,7 +140,14 @@ pub fn install_hooks(repo_url: &str, secrets_path: &str) {
     write_git_regex_file(repo_url, secrets_path);
 
     let mut git_template = env::home_dir().expect("Could not find home directory");
-    git_template.push(".git-template/hooks/pre-commit");
+    git_template.push(".git-template/hooks");
+
+    if let Err(e) = fs::create_dir_all(&git_template) {
+        eprintln!("Failed to create hooks directory: {}", e);
+        return;
+    }
+
+    git_template.push("pre-commit");
 
     if git_template.is_file() {
         println!("pre-commit hook exists; adding hook to it");
@@ -161,6 +168,17 @@ pub fn install_hooks(repo_url: &str, secrets_path: &str) {
         let mut writer = BufWriter::new(file);
         writeln!(writer, "\ngit find hook").unwrap();
     } else {
-        println!("pre-commit hook file not found... creating file")
+        println!("pre-commit hook file not found... creating file");
+
+        match fs::File::create(&git_template) {
+            Ok(file) => {
+                let mut writer = BufWriter::new(file);
+                writeln!(writer, "#!/bin/sh").unwrap();
+                writeln!(writer, "# Hook installed by Rust script").unwrap();
+                writeln!(writer, "git find hook").unwrap();
+                println!("Created new pre-commit hook at {:?}", git_template);
+            }
+            Err(e) => eprintln!("Failed to create pre-commit hook: {}", e),
+        }
     }
 }
