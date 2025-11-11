@@ -1,0 +1,11 @@
+# AWS secrets
+(\"|')?(AWS|aws|Aws)?_?(SECRET|secret|Secret)?_?(ACCESS|access|Access)?_?(KEY|key|Key)(\"|')?\s*(:|=>|=)\s*(\"|')?[A-Za-z0-9/+=]{40}(\\"|')?
+
+# Generic private key
+-----BEGIN [A-Z]*PRIVATE KEY-----
+
+# Test Server Name
+MYSERVER[A-Z]{4},[0-9]{4}
+
+# Test string
+SUPERCODEWORD
