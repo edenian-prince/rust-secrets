@@ -181,4 +181,17 @@ pub fn install_hooks(repo_url: &str, secrets_path: &str) {
             Err(e) => eprintln!("Failed to create pre-commit hook: {}", e),
         }
     }
+
+    let mut template_dir = env::home_dir().expect("Could not find home directory");
+    template_dir.push(".git-template");
+
+    Command::new("git")
+        .args([
+            "config",
+            "--global",
+            "init.templatedir",
+            template_dir.to_str().unwrap(),
+        ])
+        .status()
+        .expect("Failed to set global git template directory");
 }
