@@ -12,7 +12,7 @@ jobs:
 
     steps:
       # Checkout the repo
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # Generate changelog
       - name: Conventional Changelog Action
@@ -24,9 +24,7 @@ jobs:
 
       # Set up Rust
       - name: Set up Rust
-        uses: actions/setup-rust@v2
-        with:
-          rust-version: stable
+        uses: actions-rust-lang/setup-rust-toolchain@v1
 
       # Install dunamai for versioning
       # - name: Install dunamai CLI
