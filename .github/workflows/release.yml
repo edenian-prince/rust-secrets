@@ -1,0 +1,100 @@
+name: Build and Release Rust Package
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-release:
+    name: Build and Release
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repo
+      - uses: actions/checkout@v4
+
+      # Generate changelog
+      - name: Conventional Changelog Action
+        id: changelog
+        uses: TriPSs/conventional-changelog-action@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          create-summary: true
+
+      # Set up Rust
+      - name: Set up Rust
+        uses: actions/setup-rust@v2
+        with:
+          rust-version: stable
+
+      # Install dunamai for versioning
+      - name: Install dunamai CLI
+        run: cargo install dunamai-cli
+
+      # Determine version
+      - name: Determine version
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        id: version
+        run: |
+          VERSION=$(dunamai from any --no-metadata --style pep440 | sed -E 's/\.post[0-9]+\.dev[0-9]+//')
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "VERSION=$VERSION"
+      
+        # Build Linux binary
+
+      - name: Build Linux release
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        run: cargo build --release --target x86_64-unknown-linux-gnu
+
+      # Build Windows binary
+      - name: Install Windows target
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        run: rustup target add x86_64-pc-windows-gnu
+
+      - name: Install MinGW (for Windows linker)
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        run: sudo apt-get install -y mingw-w64
+
+      - name: Build Windows release
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        run: cargo build --release --target x86_64-pc-windows-gnu
+
+      # Build release binary
+      - name: Build release binary
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        run: cargo build --release
+
+      # Prepare release artifacts
+      - name: Prepare release artifacts
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        run: |
+          mkdir -p release
+          cp target/release/git-find release/
+          ls -l release
+
+      # Create GitHub release and attach binary using gh CLI
+      - name: Create GitHub release and attach binary
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        run: |
+          gh release create $TAG release/* \
+            --title "$TAG" \
+            --notes "$CHANGELOG" \
+            --discussion-category "Announcements"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.changelog.outputs.tag }}
+          CHANGELOG: ${{ steps.changelog.outputs.clean_changelog }}
+
+      # Optional: Commit version updates back to repo
+      - name: Push updated files
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Build release $VERSION"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

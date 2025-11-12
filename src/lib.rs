@@ -190,7 +190,7 @@ pub fn install_hooks(repo_url: &str, secrets_path: &str) {
         .args([
             "config",
             "--global",
-            "init.templatedir",
+            "init.templateDir",
             template_dir.to_str().unwrap(),
         ])
         .status()
