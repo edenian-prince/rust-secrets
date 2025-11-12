@@ -12,7 +12,7 @@ jobs:
 
     steps:
       # Checkout the repo
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
 
       # Generate changelog
       - name: Conventional Changelog Action
@@ -24,18 +24,20 @@ jobs:
 
       # Set up Rust
       - name: Set up Rust
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+        uses: actions/setup-rust@v2
+        with:
+          rust-version: stable
 
       # Install dunamai for versioning
-      - name: Install dunamai CLI
-        run: cargo install dunamai-cli
+      # - name: Install dunamai CLI
+      #   run: cargo install dunamai-cli
 
       # Determine version
       - name: Determine version
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
         id: version
         run: |
-          VERSION=$(dunamai from any --no-metadata --style pep440 | sed -E 's/\.post[0-9]+\.dev[0-9]+//')
+          VERSION=$(cargo pkgid | sed 's/.*#//')
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "VERSION=$VERSION"
       
