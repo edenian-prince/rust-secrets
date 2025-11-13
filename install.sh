@@ -3,7 +3,7 @@ set -euo pipefail
 
 # === CONFIGURATION ===
 CLI_NAME="git-find"
-RELEASE_URL="https://github.com/edenian-prince/rust-secrets/releases/download/v0.1.1/git-find"
+RELEASE_URL="https://github.com/edenian-prince/rust-secrets/releases/download/v0.1.1"
 INSTALL_DIR="$HOME/.local/bin"
 HOOKS_TEMPLATE="$HOME/.git-template/hooks"
 GLOBAL_HOOKS_PATH="$HOOKS_TEMPLATE" # using as global hooks path
@@ -69,8 +69,8 @@ if ! command -v git-find &>/dev/null; then
   exit 0
 fi
 
-echo "Running git-find scan..."
-git find scan
+echo "Running git-find hook..."
+git find hook
 EOF
 
 chmod +x "$HOOKS_TEMPLATE/pre-commit"
