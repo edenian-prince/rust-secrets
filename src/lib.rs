@@ -129,7 +129,13 @@ pub fn pre_commit_hook_scan(custom_patterns: Option<Regex>) {
     }
 
     if secrets_found {
-        eprintln!("{}", "Secret scan failed. Commit aborted.".red().bold());
+        eprintln!(
+            "{} {}\n",
+            "Secret scan failed. Commit aborted.".red().bold(),
+            "use `--no-verify` if this was a false positive"
+                .red()
+                .bold()
+        );
         std::process::exit(1);
     } else {
         println!("{}", "No secrets found.".green().bold());
