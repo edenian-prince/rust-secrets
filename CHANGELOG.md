@@ -1,3 +1,12 @@
+## [0.1.3](https://github.com/edenian-prince/rust-secrets/compare/v0.1.2...v0.1.3) (2025-11-16)
+
+
+### Bug Fixes
+
+* install.sh, pull the latest release ([e87f64e](https://github.com/edenian-prince/rust-secrets/commit/e87f64e2c26748742a339ff69241ea194aa2270e))
+
+
+
 ## [0.1.2](https://github.com/edenian-prince/rust-secrets/compare/v0.1.1...v0.1.2) (2025-11-16)
 
 
