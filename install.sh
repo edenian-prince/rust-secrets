@@ -2,7 +2,7 @@
 
 # === CONFIGURATION ===
 CLI_NAME="git-find"
-RELEASE_URL="https://github.com/edenian-prince/rust-secrets/releases/download/v0.1.1"
+REPO="edenian-prince/rust-secrets"
 INSTALL_DIR="$HOME/.local/bin"
 HOOKS_TEMPLATE="$HOME/.git-template/hooks"
 GLOBAL_HOOKS_PATH="$HOOKS_TEMPLATE" # using as global hooks path
@@ -22,7 +22,6 @@ OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 
 case "$OS" in
 linux*)
-  # BINARY="$CLI_NAME-x86_64-unknown-linux-gnu"
   BINARY="$CLI_NAME"
   ;;
 darwin*)
@@ -36,9 +35,20 @@ msys* | cygwin* | mingw*)
   ;;
 esac
 
-info "Downloading binary for $OS..."
+info "Fetching latest release URL..."
+# Get the latest release JSON and extract the browser_download_url for our binary
+RELEASE_URL=$(curl -s "https://api.github.com/repos/$REPO/releases/latest" |
+  grep '"browser_download_url":' |
+  grep "$BINARY" |
+  sed -E 's/.*"([^"]+)".*/\1/')
+
+if [ -z "$RELEASE_URL" ]; then
+  error "Could not find download URL for $BINARY in the latest release."
+fi
+
+info "Downloading $BINARY from latest release..."
 mkdir -p "$INSTALL_DIR"
-curl -L -o "$INSTALL_DIR/$CLI_NAME" "$RELEASE_URL/$BINARY" || error "Download failed"
+curl -L -o "$INSTALL_DIR/$CLI_NAME" "$RELEASE_URL" || error "Download failed"
 
 chmod +x "$INSTALL_DIR/$CLI_NAME"
 ok "Installed $CLI_NAME to $INSTALL_DIR"
@@ -50,4 +60,4 @@ if ! echo "$PATH" | grep -q "$INSTALL_DIR"; then
 fi
 
 ok "✅ Installation complete!"
-echo "git-find CLI is now installed."
+echo "$CLI_NAME CLI is now installed."
