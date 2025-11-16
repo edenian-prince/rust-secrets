@@ -144,6 +144,8 @@ pub fn pre_commit_hook_scan(custom_patterns: Option<Regex>) {
 }
 
 pub fn install_hooks(repo_url: &str, secrets_path: &str) {
+    // pull a remote secrets regex path and put it in
+    // global gitconfig
     write_git_regex_file(repo_url, secrets_path);
 
     let mut git_template = env::home_dir().expect("Could not find home directory");
@@ -201,4 +203,15 @@ pub fn install_hooks(repo_url: &str, secrets_path: &str) {
         ])
         .status()
         .expect("Failed to set global git template directory");
+
+    // need to configure the git global hooks path
+    Command::new("git")
+        .args([
+            "config",
+            "--global",
+            "core.hooksPath",
+            template_dir.to_str().unwrap(),
+        ])
+        .status()
+        .expect("failed to set up global hooks path");
 }

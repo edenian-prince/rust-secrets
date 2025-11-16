@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -euo pipefail
 
 # === CONFIGURATION ===
 CLI_NAME="git-find"
@@ -41,11 +40,6 @@ info "Downloading binary for $OS..."
 mkdir -p "$INSTALL_DIR"
 curl -L -o "$INSTALL_DIR/$CLI_NAME" "$RELEASE_URL/$BINARY" || error "Download failed"
 
-# Windows binaries need .exe extension
-if [[ "$OS" == *"mingw"* || "$OS" == *"msys"* || "$OS" == *"cygwin"* ]]; then
-  mv "$INSTALL_DIR/$CLI_NAME" "$INSTALL_DIR/$CLI_NAME.exe"
-fi
-
 chmod +x "$INSTALL_DIR/$CLI_NAME"
 ok "Installed $CLI_NAME to $INSTALL_DIR"
 
@@ -55,34 +49,5 @@ if ! echo "$PATH" | grep -q "$INSTALL_DIR"; then
   echo "export PATH=\"$INSTALL_DIR:\$PATH\"" >>"$HOME/.bashrc"
 fi
 
-# === STEP 3: Set up global hooks ===
-info "Setting up global Git hooks..."
-mkdir -p "$HOOKS_TEMPLATE"
-
-# Download or copy your pre-commit hook
-# (replace this with your repo's pre-commit logic if you want to bundle it)
-cat >"$HOOKS_TEMPLATE/pre-commit" <<'EOF'
-#!/usr/bin/env bash
-# Global pre-commit hook using git-find
-if ! command -v git-find &>/dev/null; then
-  echo "git-find not found in PATH, skipping secret scan."
-  exit 0
-fi
-
-echo "Running git-find hook..."
-git find hook
-EOF
-
-chmod +x "$HOOKS_TEMPLATE/pre-commit"
-
-# Configure Git globally to use it
-git config --global core.hooksPath "$GLOBAL_HOOKS_PATH"
-ok "Configured global Git hooks path → $GLOBAL_HOOKS_PATH"
-
-# === STEP 4: Confirm setup ===
-info "Verifying setup..."
-git config --global --get core.hooksPath
-"$INSTALL_DIR/$CLI_NAME" --version || echo "(CLI verification skipped)"
-
 ok "✅ Installation complete!"
-echo "Your global pre-commit hook is now active for all repos."
+echo "git-find CLI is now installed."
