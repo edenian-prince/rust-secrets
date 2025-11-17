@@ -194,6 +194,9 @@ pub fn install_hooks(repo_url: &str, secrets_path: &str) {
     let mut template_dir = env::home_dir().expect("Could not find home directory");
     template_dir.push(".git-template");
 
+    let mut hooks_dir = env::home_dir().expect("couldn't find home dir");
+    hooks_dir.push(".git-template/hooks");
+
     Command::new("git")
         .args([
             "config",
@@ -210,7 +213,7 @@ pub fn install_hooks(repo_url: &str, secrets_path: &str) {
             "config",
             "--global",
             "core.hooksPath",
-            template_dir.to_str().unwrap(),
+            hooks_dir.to_str().unwrap(),
         ])
         .status()
         .expect("failed to set up global hooks path");
