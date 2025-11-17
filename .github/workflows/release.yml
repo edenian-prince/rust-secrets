@@ -14,7 +14,7 @@ jobs:
       # Checkout the repo
       - uses: actions/checkout@v5
 
-      # Generate changelog
+      # Generate changelog and determine tag
       - name: Conventional Changelog Action
         id: changelog
         uses: TriPSs/conventional-changelog-action@v3
@@ -22,30 +22,30 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           create-summary: true
 
-      # Set up Rust
+      # Stop if no new version
+      - name: Stop if skipped
+        if: ${{ steps.changelog.outputs.skipped == 'true' }}
+        run: echo "No new version — skipping build."
+
+      # Inject new version into Cargo.toml to match tag
+      - name: Update Cargo.toml version to match release tag
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        run: |
+          TAG="${{ steps.changelog.outputs.tag }}"
+          VERSION="${TAG#v}" # strip leading v if present
+          echo "Updating Cargo.toml version to $VERSION"
+          sed -i "s/^version = .*/version = \"$VERSION\"/" Cargo.toml
+
+      # Install Rust
       - name: Set up Rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
 
-      # Install dunamai for versioning
-      # - name: Install dunamai CLI
-      #   run: cargo install dunamai-cli
-
-      # Determine version
-      - name: Determine version
-        if: ${{ steps.changelog.outputs.skipped == 'false' }}
-        id: version
-        run: |
-          VERSION=$(cargo pkgid | sed 's/.*#//')
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "VERSION=$VERSION"
-      
-        # Build Linux binary
-
+      # Build Linux binary
       - name: Build Linux release
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
         run: cargo build --release --target x86_64-unknown-linux-gnu
 
-      # Build Windows binary
+      # Windows setup
       - name: Install Windows target
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
         run: rustup target add x86_64-pc-windows-gnu
@@ -54,45 +54,42 @@ jobs:
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
         run: sudo apt-get install -y mingw-w64
 
+      # Build Windows binary
       - name: Build Windows release
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
         run: cargo build --release --target x86_64-pc-windows-gnu
 
-      # Build release binary
-      - name: Build release binary
-        if: ${{ steps.changelog.outputs.skipped == 'false' }}
-        run: cargo build --release
-
       # Prepare release artifacts
-      - name: Prepare release artifacts
+      - name: Prepare assets
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
         run: |
           mkdir -p release
-          cp target/release/git-find release/
+          cp target/x86_64-unknown-linux-gnu/release/git-find release/git-find-linux-x86_64
+          cp target/x86_64-pc-windows-gnu/release/git-find.exe release/git-find-windows-x86_64.exe
           ls -l release
 
-      # Create GitHub release and attach binary using gh CLI
-      - name: Create GitHub release and attach binary
+      # Create GitHub Release
+      - name: Create GitHub release and upload assets
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
         run: |
-          gh release create $TAG release/* \
-            --title "$TAG" \
-            --notes "$CHANGELOG" \
+          gh release create "${TAG}" release/* \
+            --title "${TAG}" \
+            --notes "${CHANGELOG}" \
             --discussion-category "Announcements"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ steps.changelog.outputs.tag }}
           CHANGELOG: ${{ steps.changelog.outputs.clean_changelog }}
 
-      # Optional: Commit version updates back to repo
-      - name: Push updated files
+      # Commit updated Cargo.toml if version changed
+      - name: Commit version bump
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
-          git add .
-          git commit -m "Build release $VERSION"
+          git add Cargo.toml
+          git commit -m "chore: bump version to $VERSION"
           git push
         env:
+          VERSION: ${{ steps.changelog.outputs.version }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
