@@ -191,11 +191,11 @@ pub fn install_hooks(repo_url: &str, secrets_path: &str) {
         }
     }
 
-    let mut template_dir = env::home_dir().expect("Could not find home directory");
-    template_dir.push(".git-template");
+    let home_dir = env::home_dir().expect("Could not find home directory");
 
-    let mut hooks_dir = env::home_dir().expect("couldn't find home dir");
-    hooks_dir.push(".git-template/hooks");
+    let template_dir = home_dir.join(".git-template");
+    let hooks_dir = template_dir.join("hooks");
+    let pc_dir = hooks_dir.join("pre-commit");
 
     Command::new("git")
         .args([
@@ -217,4 +217,10 @@ pub fn install_hooks(repo_url: &str, secrets_path: &str) {
         ])
         .status()
         .expect("failed to set up global hooks path");
+
+    // need to make it executable!
+    Command::new("chmod")
+        .args(["+x", pc_dir.to_str().unwrap()])
+        .status()
+        .expect("failed to make hooks path executable");
 }
