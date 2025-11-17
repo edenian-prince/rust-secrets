@@ -4,7 +4,7 @@ Pre-commit hooks written in rust. A complete replacement of AWS git-secrets
 ## Install 
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/edenian-prince/rust-secrets/refs/heads/feature/install-script/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/edenian-prince/rust-secrets/refs/heads/main/install.sh | bash
 ```
 
 that will put the cli tool in your .bashrc
