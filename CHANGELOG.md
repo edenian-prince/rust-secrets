@@ -1,3 +1,12 @@
+## [0.1.5](https://github.com/edenian-prince/rust-secrets/compare/v0.1.4...v0.1.5) (2025-11-17)
+
+
+### Bug Fixes
+
+* add hooks folder to the global hooks path ([825a643](https://github.com/edenian-prince/rust-secrets/commit/825a6436bdef89fb854167e65ea0b53703ffabaa))
+
+
+
 ## [0.1.4](https://github.com/edenian-prince/rust-secrets/compare/v0.1.3...v0.1.4) (2025-11-17)
 
 
