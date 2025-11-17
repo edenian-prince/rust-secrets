@@ -1,3 +1,12 @@
+## [0.1.4](https://github.com/edenian-prince/rust-secrets/compare/v0.1.3...v0.1.4) (2025-11-17)
+
+
+### Bug Fixes
+
+* update release.yml ([0a26cdf](https://github.com/edenian-prince/rust-secrets/commit/0a26cdf654c177985587aaf7fe571655f793d5b0))
+
+
+
 ## [0.1.3](https://github.com/edenian-prince/rust-secrets/compare/v0.1.2...v0.1.3) (2025-11-16)
 
 
