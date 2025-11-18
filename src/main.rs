@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 
 use clap::{Parser, Subcommand};
+use regex::Regex;
 use rust_hooks::*;
 
 #[derive(Parser)]
@@ -37,6 +38,11 @@ enum Commands {
         #[arg(short, long)]
         repo: String,
         secrets: String,
+    },
+    /// scan the repo for regexs in providers list or custom regex
+    Scan {
+        #[arg(short, long)]
+        custom_patterns: Option<String>,
     },
 }
 
@@ -77,10 +83,19 @@ fn main() {
         Some(Commands::Install { repo, secrets }) => {
             install_hooks(repo, secrets);
         }
+        Some(Commands::Scan { custom_patterns }) => {
+            if let Some(pattern_str) = custom_patterns {
+                // Convert the string into a Regex safely
+                match Regex::new(pattern_str) {
+                    Ok(user_regex) => scan(Some(user_regex)),
+                    Err(e) => eprintln!("Invalid regex: {}", e),
+                }
+            } else {
+                scan(None); // No regex provided
+            }
+        }
         None => {}
     }
 
     // Continued program logic goes here...
 }
-
-
