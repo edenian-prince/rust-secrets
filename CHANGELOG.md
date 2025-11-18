@@ -1,3 +1,12 @@
+# [0.2.0](https://github.com/edenian-prince/rust-secrets/compare/v0.1.6...v0.2.0) (2025-11-18)
+
+
+### Features
+
+* add scan command ([3b8d6e6](https://github.com/edenian-prince/rust-secrets/commit/3b8d6e628c4f632675a33004502d6bb665efc007))
+
+
+
 ## [0.1.6](https://github.com/edenian-prince/rust-secrets/compare/v0.1.5...v0.1.6) (2025-11-17)
 
 
@@ -31,17 +40,6 @@
 ### Bug Fixes
 
 * install.sh, pull the latest release ([e87f64e](https://github.com/edenian-prince/rust-secrets/commit/e87f64e2c26748742a339ff69241ea194aa2270e))
-
-
-
-## [0.1.2](https://github.com/edenian-prince/rust-secrets/compare/v0.1.1...v0.1.2) (2025-11-16)
-
-
-### Bug Fixes
-
-* add install shell script ([9214e97](https://github.com/edenian-prince/rust-secrets/commit/9214e97a11853648add59db1acc54c1e4813ab94))
-* keep the install more simple! ([8d897f4](https://github.com/edenian-prince/rust-secrets/commit/8d897f4ab1f37a5cc52c9e3d718ea1422c472969))
-* path name to the binary was not correct ([2d7e109](https://github.com/edenian-prince/rust-secrets/commit/2d7e109a49a28989be097803f7cb6b29b521a88e))
 
 
 
