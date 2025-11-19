@@ -69,10 +69,7 @@ pub fn read_patterns() -> Vec<regex::Regex> {
     for path in files {
         let path_str = &path.to_str().unwrap();
 
-        println!("reading file: {}", path_str);
-
         if path_str.contains("github") {
-            println!("pulling file: {} from github", path_str);
             // Use a temporary file to store the downloaded content
             let tmp_path = "/tmp/github_regex.txt"; // or use tempfile crate for safer temp files
 
