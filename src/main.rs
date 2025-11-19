@@ -4,6 +4,9 @@ use clap::{Parser, Subcommand};
 use regex::Regex;
 use rust_hooks::*;
 
+use crate::utils::add_config;
+pub mod utils;
+
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
 struct Cli {
@@ -33,16 +36,17 @@ enum Commands {
     /// scans for regex in global config
     Hook {},
     /// install the hooks
-    Install {
-        /// git config paths
-        #[arg(short, long)]
-        repo: String,
-        secrets: String,
-    },
+    Install {},
     /// scan the repo for regexs in providers list or custom regex
     Scan {
         #[arg(short, long)]
         custom_patterns: Option<String>,
+    },
+    /// add a regex file to global git config
+    AddProvider {
+        /// git config paths
+        #[arg(short, long)]
+        path: String,
     },
 }
 
@@ -80,8 +84,8 @@ fn main() {
         Some(Commands::Hook {}) => {
             pre_commit_hook_scan(None);
         }
-        Some(Commands::Install { repo, secrets }) => {
-            install_hooks(repo, secrets);
+        Some(Commands::Install {}) => {
+            install_hooks();
         }
         Some(Commands::Scan { custom_patterns }) => {
             if let Some(pattern_str) = custom_patterns {
@@ -93,6 +97,9 @@ fn main() {
             } else {
                 scan(None); // No regex provided
             }
+        }
+        Some(Commands::AddProvider { path }) => {
+            add_config(path);
         }
         None => {}
     }
