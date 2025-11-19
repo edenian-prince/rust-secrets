@@ -1,3 +1,12 @@
+## [0.3.2](https://github.com/edenian-prince/rust-secrets/compare/v0.3.1...v0.3.2) (2025-11-19)
+
+
+### Bug Fixes
+
+* remove print statements of provider paths ([d56de2a](https://github.com/edenian-prince/rust-secrets/commit/d56de2a8acfb376bc0f39c0db2de6e2571536877))
+
+
+
 ## [0.3.1](https://github.com/edenian-prince/rust-secrets/compare/v0.3.0...v0.3.1) (2025-11-19)
 
 
@@ -31,15 +40,6 @@
 ### Bug Fixes
 
 * make pre commit path executable ([d75d055](https://github.com/edenian-prince/rust-secrets/commit/d75d0551598346d9ed98a5d0f251f90bcf14ea60))
-
-
-
-## [0.1.5](https://github.com/edenian-prince/rust-secrets/compare/v0.1.4...v0.1.5) (2025-11-17)
-
-
-### Bug Fixes
-
-* add hooks folder to the global hooks path ([825a643](https://github.com/edenian-prince/rust-secrets/commit/825a6436bdef89fb854167e65ea0b53703ffabaa))
 
 
 
