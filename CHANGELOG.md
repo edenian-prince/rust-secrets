@@ -1,3 +1,12 @@
+# [0.3.0](https://github.com/edenian-prince/rust-secrets/compare/v0.2.0...v0.3.0) (2025-11-19)
+
+
+### Features
+
+* fetch remote secrets from gh, add utils for adding/reading providers ([f047de2](https://github.com/edenian-prince/rust-secrets/commit/f047de256fd48570fcdd2f9d50ee19214791a103))
+
+
+
 # [0.2.0](https://github.com/edenian-prince/rust-secrets/compare/v0.1.6...v0.2.0) (2025-11-18)
 
 
@@ -31,15 +40,6 @@
 ### Bug Fixes
 
 * update release.yml ([0a26cdf](https://github.com/edenian-prince/rust-secrets/commit/0a26cdf654c177985587aaf7fe571655f793d5b0))
-
-
-
-## [0.1.3](https://github.com/edenian-prince/rust-secrets/compare/v0.1.2...v0.1.3) (2025-11-16)
-
-
-### Bug Fixes
-
-* install.sh, pull the latest release ([e87f64e](https://github.com/edenian-prince/rust-secrets/commit/e87f64e2c26748742a339ff69241ea194aa2270e))
 
 
 
