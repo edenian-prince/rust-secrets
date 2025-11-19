@@ -1,3 +1,12 @@
+## [0.3.1](https://github.com/edenian-prince/rust-secrets/compare/v0.3.0...v0.3.1) (2025-11-19)
+
+
+### Bug Fixes
+
+* change contains raw.github to just github ([0fddfb8](https://github.com/edenian-prince/rust-secrets/commit/0fddfb8305c6aa6903fab4e87e76b469283f9610))
+
+
+
 # [0.3.0](https://github.com/edenian-prince/rust-secrets/compare/v0.2.0...v0.3.0) (2025-11-19)
 
 
@@ -31,15 +40,6 @@
 ### Bug Fixes
 
 * add hooks folder to the global hooks path ([825a643](https://github.com/edenian-prince/rust-secrets/commit/825a6436bdef89fb854167e65ea0b53703ffabaa))
-
-
-
-## [0.1.4](https://github.com/edenian-prince/rust-secrets/compare/v0.1.3...v0.1.4) (2025-11-17)
-
-
-### Bug Fixes
-
-* update release.yml ([0a26cdf](https://github.com/edenian-prince/rust-secrets/commit/0a26cdf654c177985587aaf7fe571655f793d5b0))
 
 
 
