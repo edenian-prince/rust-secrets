@@ -1,3 +1,12 @@
+## [0.3.4](https://github.com/edenian-prince/rust-secrets/compare/v0.3.3...v0.3.4) (2025-11-20)
+
+
+### Bug Fixes
+
+* switch to current_dir before running git pull on private repo ([a7a0203](https://github.com/edenian-prince/rust-secrets/commit/a7a020301d970e9b2b30a5a597066a9f1d6d3ea8))
+
+
+
 ## [0.3.3](https://github.com/edenian-prince/rust-secrets/compare/v0.3.2...v0.3.3) (2025-11-20)
 
 
@@ -31,15 +40,6 @@
 ### Features
 
 * fetch remote secrets from gh, add utils for adding/reading providers ([f047de2](https://github.com/edenian-prince/rust-secrets/commit/f047de256fd48570fcdd2f9d50ee19214791a103))
-
-
-
-# [0.2.0](https://github.com/edenian-prince/rust-secrets/compare/v0.1.6...v0.2.0) (2025-11-18)
-
-
-### Features
-
-* add scan command ([3b8d6e6](https://github.com/edenian-prince/rust-secrets/commit/3b8d6e628c4f632675a33004502d6bb665efc007))
 
 
 
