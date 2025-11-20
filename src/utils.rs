@@ -147,19 +147,20 @@ pub fn read_patterns() -> Vec<regex::Regex> {
             let top_level = String::from_utf8_lossy(&output.stdout).trim().to_string();
             println!("top level: {}", top_level);
 
-            let git_pull = Command::new("git")
+            Command::new("git")
                 .current_dir(&top_level)
-                .args(["pull"])
+                .args(["pull", "--quiet"])
                 .output()
                 .expect("failed to fetch private repo. Have you cloned the private repo containing the secret keys?");
+            // use the prints below for troubleshooting
             // Print stdout
-            println!("stdout: {}", String::from_utf8_lossy(&git_pull.stdout));
+            // println!("stdout: {}", String::from_utf8_lossy(&git_pull.stdout));
 
             // Print stderr
-            println!("stderr: {}", String::from_utf8_lossy(&git_pull.stderr));
+            // println!("stderr: {}", String::from_utf8_lossy(&git_pull.stderr));
 
             // Print exit status
-            println!("status: {}", git_pull.status);
+            // println!("status: {}", git_pull.status);
 
             // println!("Private repo file: {}", path_str);
 
@@ -175,32 +176,4 @@ pub fn read_patterns() -> Vec<regex::Regex> {
         }
     }
     patterns
-}
-
-// add provider lists
-pub fn add_config(path: &str, private: bool) {
-    let key = if private {
-        "git-find.private-file"
-    } else {
-        "git-find.regex-file"
-    };
-
-    // get all existing values
-    let output = Command::new("git")
-        .args(["config", "--global", "--get-all", key])
-        .output()
-        .expect("failed to run git config");
-
-    let stdout = String::from_utf8_lossy(&output.stdout);
-    let exists = stdout.lines().any(|line| line.trim() == path);
-
-    if exists {
-        println!("key already exists");
-    } else {
-        println!("adding key path to git config");
-        Command::new("git")
-            .args(["config", "--global", "--add", key, path])
-            .output()
-            .expect("failed to add a key");
-    }
 }

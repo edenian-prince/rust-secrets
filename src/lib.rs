@@ -205,3 +205,40 @@ pub fn scan(custom_patterns: Option<Regex>) {
         }
     }
 }
+
+// add provider lists
+pub fn add_config(path: &str, private: bool) {
+    let key = if private {
+        "git-find.private-file"
+    } else {
+        "git-find.regex-file"
+    };
+
+    // get all existing values
+    let output = Command::new("git")
+        .args(["config", "--global", "--get-all", key])
+        .output()
+        .expect("failed to run git config");
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let exists = stdout.lines().any(|line| line.trim() == path);
+
+    if exists {
+        println!("key already exists");
+    } else {
+        println!("adding key path to git config");
+        Command::new("git")
+            .args(["config", "--global", "--add", key, path])
+            .output()
+            .expect("failed to add a key");
+    }
+}
+
+pub fn list_providers() {
+    let gc = Command::new("git")
+        .args(["config", "--global", "--get-regex", "git-find.*"])
+        .output()
+        .expect("listing providers failed.. do you have providers set up?");
+
+    println!("{}", String::from_utf8_lossy(&gc.stdout));
+}
