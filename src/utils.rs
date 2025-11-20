@@ -128,9 +128,11 @@ pub fn read_patterns() -> Vec<regex::Regex> {
     let private_files = load_private_file_patterns();
     if !private_files.is_empty() {
         for path in private_files {
-            let path_str = &path.to_str().unwrap();
+            let path_str = path.to_str().unwrap();
 
             let git_dir = path.parent().unwrap();
+
+            println!("parent path is: {}", git_dir.display());
 
             let output = Command::new("git")
                 .args([
@@ -143,11 +145,21 @@ pub fn read_patterns() -> Vec<regex::Regex> {
                 .expect("didnt work");
 
             let top_level = String::from_utf8_lossy(&output.stdout).trim().to_string();
+            println!("top level: {}", top_level);
 
-            Command::new("git")
-                .args(["pull", "--quiet",&top_level])
+            let git_pull = Command::new("git")
+                .current_dir(&top_level)
+                .args(["pull"])
                 .output()
                 .expect("failed to fetch private repo. Have you cloned the private repo containing the secret keys?");
+            // Print stdout
+            println!("stdout: {}", String::from_utf8_lossy(&git_pull.stdout));
+
+            // Print stderr
+            println!("stderr: {}", String::from_utf8_lossy(&git_pull.stderr));
+
+            // Print exit status
+            println!("status: {}", git_pull.status);
 
             // println!("Private repo file: {}", path_str);
 
