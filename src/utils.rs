@@ -39,6 +39,22 @@ pub fn load_file_patterns() -> Vec<PathBuf> {
         .collect()
 }
 
+pub fn load_private_file_patterns() -> Vec<PathBuf> {
+    // if private-file doesn't exist, just pass.
+    let output = Command::new("git")
+        .args(["config", "--global", "--get-all", "git-find.private-file"])
+        .output()
+        .expect("failed to find provider");
+
+    // PathBuf::from(String::from_utf8_lossy(&output.stdout).trim())
+    let stdout = String::from_utf8_lossy(&output.stdout);
+
+    stdout
+        .lines()
+        .map(|line| PathBuf::from(line.trim()))
+        .collect()
+}
+
 pub fn load_regex_from_file(path: &PathBuf) -> std::io::Result<Vec<Regex>> {
     let file = fs::File::open(path)?;
     let reader = BufReader::new(file);
@@ -58,6 +74,13 @@ pub fn load_regex_from_file(path: &PathBuf) -> std::io::Result<Vec<Regex>> {
     Ok(patterns)
 }
 
+// pub fn load_private_repo_file(repo: &str) {
+//     Command::new("git")
+//         .args(["-C", &repo, "show", "origin/main", part])
+//         .output()
+//         .expect("couldn't pull private repo file");
+// }
+//
 // for each file in the git config, open and read the file,
 // and append to a regex list
 // if the file is from github, curl the file and append
@@ -101,12 +124,54 @@ pub fn read_patterns() -> Vec<regex::Regex> {
             }
         }
     }
+
+    let private_files = load_private_file_patterns();
+    if !private_files.is_empty() {
+        for path in private_files {
+            let path_str = &path.to_str().unwrap();
+
+            let git_dir = path.parent().unwrap();
+
+            let output = Command::new("git")
+                .args([
+                    "-C",
+                    git_dir.to_str().unwrap(),
+                    "rev-parse",
+                    "--show-toplevel",
+                ])
+                .output()
+                .expect("didnt work");
+
+            let top_level = String::from_utf8_lossy(&output.stdout).trim().to_string();
+
+            Command::new("git")
+                .args(["pull", "--quiet",&top_level])
+                .output()
+                .expect("failed to fetch private repo. Have you cloned the private repo containing the secret keys?");
+
+            // println!("Private repo file: {}", path_str);
+
+            match load_regex_from_file(&path) {
+                Ok(regexes) => {
+                    println!("Loaded {} regexes", regexes.len());
+                    patterns.extend(regexes);
+                }
+                Err(err) => {
+                    println!("Error reading {}: {}", path_str, err);
+                }
+            }
+        }
+    }
     patterns
 }
 
 // add provider lists
-pub fn add_config(path: &str) {
-    let key = "git-find.regex-file";
+pub fn add_config(path: &str, private: bool) {
+    let key = if private {
+        "git-find.private-file"
+    } else {
+        "git-find.regex-file"
+    };
 
     // get all existing values
     let output = Command::new("git")
