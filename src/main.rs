@@ -47,6 +47,9 @@ enum Commands {
         /// git config paths
         #[arg(short, long)]
         path: String,
+        /// optional, use it if pulling secrets from a github repo
+        #[arg(short, long)]
+        isrepo: bool,
     },
 }
 
@@ -98,8 +101,9 @@ fn main() {
                 scan(None); // No regex provided
             }
         }
-        Some(Commands::AddProvider { path }) => {
-            add_config(path);
+        Some(Commands::AddProvider { path, isrepo }) => {
+            // Convert Option<bool> into a definite bool
+            add_config(path, *isrepo);
         }
         None => {}
     }
