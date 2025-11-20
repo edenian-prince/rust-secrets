@@ -37,9 +37,10 @@ enum Commands {
         /// git config paths
         #[arg(short, long)]
         path: String,
-        /// optional, use it if pulling secrets from a github repo
+        /// optional, if pulling secrets from a github repo. this sets up automated provider git
+        /// pulls
         #[arg(short, long)]
-        isrepo: bool,
+        is_repo: bool,
     },
 }
 
@@ -79,9 +80,9 @@ fn main() {
                 scan(None); // No regex provided
             }
         }
-        Some(Commands::AddProvider { path, isrepo }) => {
+        Some(Commands::AddProvider { path, is_repo }) => {
             // Convert Option<bool> into a definite bool
-            add_config(path, *isrepo);
+            add_config(path, *is_repo);
         }
         None => {}
     }
