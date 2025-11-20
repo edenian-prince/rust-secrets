@@ -1,25 +1,15 @@
-use std::path::PathBuf;
-
 use clap::{Parser, Subcommand};
 use regex::Regex;
 use rust_hooks::*;
 
-use crate::utils::add_config;
 pub mod utils;
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
 struct Cli {
-    /// Optional name to operate on
-    name: Option<String>,
-
-    /// Sets a custom config file
-    #[arg(short, long, value_name = "FILE")]
-    config: Option<PathBuf>,
-
-    /// Turn debugging information on
-    #[arg(short, long, action = clap::ArgAction::Count)]
-    debug: u8,
+    /// List secrets providers in your git config
+    #[arg(short, long, action = clap::ArgAction::SetTrue)]
+    list: bool,
 
     #[command(subcommand)]
     command: Option<Commands>,
@@ -47,31 +37,20 @@ enum Commands {
         /// git config paths
         #[arg(short, long)]
         path: String,
-        /// optional, use it if pulling secrets from a github repo
+        /// optional, if pulling secrets from a github repo. this sets up automated provider git
+        /// pulls
         #[arg(short, long)]
-        isrepo: bool,
+        is_repo: bool,
     },
 }
 
 fn main() {
     let cli = Cli::parse();
 
-    // You can check the value provided by positional arguments, or option arguments
-    if let Some(name) = cli.name.as_deref() {
-        println!("Value for name: {name}");
-    }
-
-    if let Some(config_path) = cli.config.as_deref() {
-        println!("Value for config: {}", config_path.display());
-    }
-
-    // You can see how many times a particular flag or argument occurred
-    // Note, only flags can have multiple occurrences
-    match cli.debug {
-        0 => println!("Debug mode is off"),
-        1 => println!("Debug mode is kind of on"),
-        2 => println!("Debug mode is on"),
-        _ => println!("Don't be crazy"),
+    // --list flag to show global providers
+    if cli.list {
+        // runs git config --global --get-regex git-find.*
+        list_providers();
     }
 
     // You can check for the existence of subcommands, and if found use their
@@ -101,9 +80,9 @@ fn main() {
                 scan(None); // No regex provided
             }
         }
-        Some(Commands::AddProvider { path, isrepo }) => {
+        Some(Commands::AddProvider { path, is_repo }) => {
             // Convert Option<bool> into a definite bool
-            add_config(path, *isrepo);
+            add_config(path, *is_repo);
         }
         None => {}
     }
