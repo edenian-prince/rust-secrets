@@ -1,3 +1,13 @@
+## [0.3.5](https://github.com/edenian-prince/rust-secrets/compare/v0.3.4...v0.3.5) (2025-11-20)
+
+
+### Bug Fixes
+
+* add --list command and clean up cli ([7d8b365](https://github.com/edenian-prince/rust-secrets/commit/7d8b365f74480ba6315e2f623396d803f26bdb55))
+* add powershell install ([46e3eac](https://github.com/edenian-prince/rust-secrets/commit/46e3eacae1db343d6edfc0a048382298bd3365e9))
+
+
+
 ## [0.3.4](https://github.com/edenian-prince/rust-secrets/compare/v0.3.3...v0.3.4) (2025-11-20)
 
 
@@ -31,15 +41,6 @@
 ### Bug Fixes
 
 * change contains raw.github to just github ([0fddfb8](https://github.com/edenian-prince/rust-secrets/commit/0fddfb8305c6aa6903fab4e87e76b469283f9610))
-
-
-
-# [0.3.0](https://github.com/edenian-prince/rust-secrets/compare/v0.2.0...v0.3.0) (2025-11-19)
-
-
-### Features
-
-* fetch remote secrets from gh, add utils for adding/reading providers ([f047de2](https://github.com/edenian-prince/rust-secrets/commit/f047de256fd48570fcdd2f9d50ee19214791a103))
 
 
 
