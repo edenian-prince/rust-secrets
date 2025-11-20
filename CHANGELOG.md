@@ -1,3 +1,12 @@
+## [0.3.3](https://github.com/edenian-prince/rust-secrets/compare/v0.3.2...v0.3.3) (2025-11-20)
+
+
+### Bug Fixes
+
+* auto pull regex files from private repo ([c66ca36](https://github.com/edenian-prince/rust-secrets/commit/c66ca36fbda533f729101cfb93fc0c75871cd0f0))
+
+
+
 ## [0.3.2](https://github.com/edenian-prince/rust-secrets/compare/v0.3.1...v0.3.2) (2025-11-19)
 
 
@@ -31,15 +40,6 @@
 ### Features
 
 * add scan command ([3b8d6e6](https://github.com/edenian-prince/rust-secrets/commit/3b8d6e628c4f632675a33004502d6bb665efc007))
-
-
-
-## [0.1.6](https://github.com/edenian-prince/rust-secrets/compare/v0.1.5...v0.1.6) (2025-11-17)
-
-
-### Bug Fixes
-
-* make pre commit path executable ([d75d055](https://github.com/edenian-prince/rust-secrets/commit/d75d0551598346d9ed98a5d0f251f90bcf14ea60))
 
 
 
