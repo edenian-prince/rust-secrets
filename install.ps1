@@ -30,7 +30,7 @@ if (-not $assetUrl) {
 Info "Downloading $Asset ..."
 New-Item -ItemType Directory -Force -Path $InstallDir | Out-Null
 
-$targetPath = Join-Path $InstallDir $CLI_NAME
+$targetPath = Join-Path $InstallDir "$CLI_NAME.exe"
 
 Invoke-WebRequest -Uri $assetUrl -OutFile $targetPath -UseBasicParsing -ErrorAction Stop
 
