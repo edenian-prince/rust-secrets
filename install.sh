@@ -16,7 +16,7 @@ OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 
 case "$OS" in
   linux*)
-    ASSET="git-find-linux-musul-x86_64"
+    ASSET="git-find-linux-musl-x86_64"
     ;;
   darwin*)
     ASSET="git-find-macos-x86_64"   # Only works if you build this later
