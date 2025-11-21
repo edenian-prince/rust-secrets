@@ -34,16 +34,33 @@ jobs:
           TAG="${{ steps.changelog.outputs.tag }}"
           VERSION="${TAG#v}" # strip leading v if present
           echo "Updating Cargo.toml version to $VERSION"
-          sed -i "s/^version = .*/version = \"$VERSION\"/" Cargo.toml
+          sed -i "s/^version *= *.*/version = \"$VERSION\"/" Cargo.toml
 
       # Install Rust
       - name: Set up Rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          targets: |
+            x86_64-unknown-linux-musl
+            x86_64-pc-windows-gnu
+      
+      # - name: Build
+      #   uses: actions-rs/cargo@v1
+      #   with:
+      #     command: build
+      #     args: --release --target x86_64-unknown-linux-musl
+      - name: Install MUSL tools
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        run: sudo apt-get update && sudo apt-get install -y musl-tools
+
+      - name: Install MinGW
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        run: sudo apt-get install -y mingw-w64
 
       # Build Linux binary
-      - name: Build Linux release
+      - name: Build Linux MUSL release
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
-        run: cargo build --release --target x86_64-unknown-linux-gnu
+        run: cargo build --release --target x86_64-unknown-linux-musl
 
       # Windows setup
       - name: Install Windows target
@@ -64,7 +81,7 @@ jobs:
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
         run: |
           mkdir -p release
-          cp target/x86_64-unknown-linux-gnu/release/git-find release/git-find-linux-x86_64
+          cp target/x86_64-unknown-linux-musl/release/git-find release/git-find-linux-musl-x86_64
           cp target/x86_64-pc-windows-gnu/release/git-find.exe release/git-find-windows-x86_64.exe
           ls -l release
 
