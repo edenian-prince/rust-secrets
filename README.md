@@ -25,7 +25,7 @@ source ~/.bashrc
 Run this in a PowerShell terminal. It will pull the `install.ps1` script from the repo and install `git-find.exe` to your `C:/USER/.local/bin` path
 
 ```PowerShell
-powershell -ExecutionPolicy ByPass -c "irm https://github.com/edenian-prince/rust-secrets/blob/main/install.ps1 | iex"
+powershell -ExecutionPolicy ByPass -c "irm https://raw.githubusercontent.com/edenian-prince/rust-secrets/refs/heads/main/install.ps1 | iex"
 ```
 
 ## Details
