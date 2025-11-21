@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# === CONFIGURATION ===
+# config
 CLI_NAME="git-find"
 REPO="edenian-prince/rust-secrets"
 INSTALL_DIR="$HOME/.local/bin"
