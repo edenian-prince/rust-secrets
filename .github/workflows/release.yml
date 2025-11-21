@@ -60,7 +60,10 @@ jobs:
       # Build Linux binary
       - name: Build Linux MUSL release
         if: ${{ steps.changelog.outputs.skipped == 'false' }}
-        run: cargo build --release --target x86_64-unknown-linux-musl
+        run: |
+          rustup target add x86_64-unknown-linux-musl
+          cargo build --release --target x86_64-unknown-linux-musl
+          
 
       # Windows setup
       - name: Install Windows target
