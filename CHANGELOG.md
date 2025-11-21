@@ -1,3 +1,12 @@
+## [0.3.6](https://github.com/edenian-prince/rust-secrets/compare/v0.3.5...v0.3.6) (2025-11-21)
+
+
+### Bug Fixes
+
+* build MUSL so all distros can use the cli ([99e9ecd](https://github.com/edenian-prince/rust-secrets/commit/99e9ecdf24c34f5012e982bca15f9df11487de3e))
+
+
+
 ## [0.3.5](https://github.com/edenian-prince/rust-secrets/compare/v0.3.4...v0.3.5) (2025-11-20)
 
 
@@ -32,15 +41,6 @@
 ### Bug Fixes
 
 * remove print statements of provider paths ([d56de2a](https://github.com/edenian-prince/rust-secrets/commit/d56de2a8acfb376bc0f39c0db2de6e2571536877))
-
-
-
-## [0.3.1](https://github.com/edenian-prince/rust-secrets/compare/v0.3.0...v0.3.1) (2025-11-19)
-
-
-### Bug Fixes
-
-* change contains raw.github to just github ([0fddfb8](https://github.com/edenian-prince/rust-secrets/commit/0fddfb8305c6aa6903fab4e87e76b469283f9610))
 
 
 
