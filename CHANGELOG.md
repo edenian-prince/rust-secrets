@@ -1,3 +1,12 @@
+## [0.3.8](https://github.com/edenian-prince/rust-secrets/compare/v0.3.7...v0.3.8) (2025-11-21)
+
+
+### Bug Fixes
+
+* install.sh ([399cd0f](https://github.com/edenian-prince/rust-secrets/commit/399cd0f9ffc8c701dfce8132fc8d68b49c00784d))
+
+
+
 ## [0.3.7](https://github.com/edenian-prince/rust-secrets/compare/v0.3.6...v0.3.7) (2025-11-21)
 
 
@@ -32,15 +41,6 @@
 ### Bug Fixes
 
 * switch to current_dir before running git pull on private repo ([a7a0203](https://github.com/edenian-prince/rust-secrets/commit/a7a020301d970e9b2b30a5a597066a9f1d6d3ea8))
-
-
-
-## [0.3.3](https://github.com/edenian-prince/rust-secrets/compare/v0.3.2...v0.3.3) (2025-11-20)
-
-
-### Bug Fixes
-
-* auto pull regex files from private repo ([c66ca36](https://github.com/edenian-prince/rust-secrets/commit/c66ca36fbda533f729101cfb93fc0c75871cd0f0))
 
 
 
