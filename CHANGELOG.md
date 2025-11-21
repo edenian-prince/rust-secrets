@@ -1,3 +1,12 @@
+## [0.3.9](https://github.com/edenian-prince/rust-secrets/compare/v0.3.8...v0.3.9) (2025-11-21)
+
+
+### Bug Fixes
+
+* prompt user if they want auto hooks ([d26703d](https://github.com/edenian-prince/rust-secrets/commit/d26703d1afff36d936c58586cbb88ebd4ae60522))
+
+
+
 ## [0.3.8](https://github.com/edenian-prince/rust-secrets/compare/v0.3.7...v0.3.8) (2025-11-21)
 
 
@@ -32,15 +41,6 @@
 
 * add --list command and clean up cli ([7d8b365](https://github.com/edenian-prince/rust-secrets/commit/7d8b365f74480ba6315e2f623396d803f26bdb55))
 * add powershell install ([46e3eac](https://github.com/edenian-prince/rust-secrets/commit/46e3eacae1db343d6edfc0a048382298bd3365e9))
-
-
-
-## [0.3.4](https://github.com/edenian-prince/rust-secrets/compare/v0.3.3...v0.3.4) (2025-11-20)
-
-
-### Bug Fixes
-
-* switch to current_dir before running git pull on private repo ([a7a0203](https://github.com/edenian-prince/rust-secrets/commit/a7a020301d970e9b2b30a5a597066a9f1d6d3ea8))
 
 
 
