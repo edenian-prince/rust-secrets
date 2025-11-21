@@ -74,13 +74,6 @@ pub fn load_regex_from_file(path: &PathBuf) -> std::io::Result<Vec<Regex>> {
     Ok(patterns)
 }
 
-// pub fn load_private_repo_file(repo: &str) {
-//     Command::new("git")
-//         .args(["-C", &repo, "show", "origin/main", part])
-//         .output()
-//         .expect("couldn't pull private repo file");
-// }
-//
 // for each file in the git config, open and read the file,
 // and append to a regex list
 // if the file is from github, curl the file and append
