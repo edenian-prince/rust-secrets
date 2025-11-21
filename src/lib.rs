@@ -2,6 +2,7 @@ use colored::Colorize;
 use regex::Regex;
 use std::fs::OpenOptions;
 use std::io::{BufWriter, Write};
+use std::path::Path;
 use std::process::Command;
 use std::{env, fs};
 
@@ -207,7 +208,34 @@ pub fn scan(custom_patterns: Option<Regex>) {
 }
 
 // add provider lists
-pub fn add_config(path: &str, private: bool) {
+pub fn add_config(path: &str) {
+    let file = Path::new(path);
+    let is_path = file.is_file();
+    let mut private = false;
+
+    if is_path {
+        println!("this is a local file path");
+        println!(
+            "if it's a git repo, would you like to automatically pull updates from this provider txt file? y/n"
+        );
+        let mut input = String::new();
+
+        std::io::stdin()
+            .read_line(&mut input)
+            .expect("Failed to read line");
+        let input = input.trim();
+
+        // assign to private
+        private = if input == "y" || input == "yes" {
+            true
+        } else if input == "n" || input == "no" {
+            false
+        } else {
+            println!("Invalid input.");
+            return;
+        };
+    }
+
     let key = if private {
         "git-find.private-file"
     } else {
@@ -230,7 +258,7 @@ pub fn add_config(path: &str, private: bool) {
         Command::new("git")
             .args(["config", "--global", "--add", key, path])
             .output()
-            .expect("failed to add a key");
+            .expect("failed to add a key.");
     }
 }
 
