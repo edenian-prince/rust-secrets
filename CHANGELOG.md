@@ -1,3 +1,12 @@
+## [0.3.7](https://github.com/edenian-prince/rust-secrets/compare/v0.3.6...v0.3.7) (2025-11-21)
+
+
+### Bug Fixes
+
+* Update release.yml ([28d5119](https://github.com/edenian-prince/rust-secrets/commit/28d5119de4601423230be8af9a780456821bfbc6))
+
+
+
 ## [0.3.6](https://github.com/edenian-prince/rust-secrets/compare/v0.3.5...v0.3.6) (2025-11-21)
 
 
@@ -32,15 +41,6 @@
 ### Bug Fixes
 
 * auto pull regex files from private repo ([c66ca36](https://github.com/edenian-prince/rust-secrets/commit/c66ca36fbda533f729101cfb93fc0c75871cd0f0))
-
-
-
-## [0.3.2](https://github.com/edenian-prince/rust-secrets/compare/v0.3.1...v0.3.2) (2025-11-19)
-
-
-### Bug Fixes
-
-* remove print statements of provider paths ([d56de2a](https://github.com/edenian-prince/rust-secrets/commit/d56de2a8acfb376bc0f39c0db2de6e2571536877))
 
 
 
