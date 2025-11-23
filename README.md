@@ -82,23 +82,23 @@ To scan the entire git history of a repo, run this within a git repo
 git find scan
 ```
 
-## Further Details
+## Comparisons to GitLeaks and AWS Git Secrets
 
-AWS Git Secrets is great, but for users new to git, it is not great. My team wanted to have one centralized regex file that all team members could scan against for
-their pre-commit hooks. AWS git secrets can do that no problem, but it has no way of automatically pulling any _changes_ to the centralized file.
+### GitLeaks
 
-For example, 
+- Installing gitleaks gives you the binary/tool to scan for secrets, but it won’t “opt you in” with Git hooks.
+- You need to explicitly configure the hook you want (pre-commit, protect, etc.) in each repository (or via a shared git template).
+- This means a user will need to pip install pre-commit hook, set up a git template for global hooks, and then set up core.hooksPath to apply the hooks to existing repos
 
-- Person A: has the centralized regex file
-- Person B: has the centralized regex file
+### AWS Git-Secrets
 
-- IT Security adds a new regex to the file..
+- Simple install
+- Does not set up global hooks that apply to ALL repos (existing repos included, see video above)
+- Does not have auto-config capabilities
 
-- Person A: experienced in git, pulls the newest regex file into their AWS git secrets provider list
-- Person B: **new to git, has no idea there is a new regex in the file or how to pull the changes...**
+**If you want to enforce hooks globally across many repos (e.g. for a team), you’ll need to set up a shared Git template directory or use a hook manager. This all handled by `git-find` when you run `git-find install`**
 
-So, `git-find` makes this process super easy and requires ZERO effort or knowledge from newbies that need pre-commit hooks for security scanning.
-It will automatically pull any changes from a centrailized provider/regex file and use those when scanning for secrets. See `src/utils/read_patterns()`
+`git-find` simplifies installing global hooks and automating config pulls. It requires ZERO effort or knowledge from newbies that need pre-commit hooks for security scanning.
 
 
 
