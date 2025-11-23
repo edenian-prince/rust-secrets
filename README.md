@@ -1,6 +1,22 @@
 # rust-secrets
 
-Pre-commit hooks that prevent credential leaks, written in rust. A replacement of AWS git-secrets that also has automated provider refreshing. Like `git-secrets`, it adds a regex file to your git config and uses it to scan for secrets when you `git commit`. With `git-find`, it can automatically pull changes to that file before scanning for secrets, ensuring that you have the most up to date regex secret file. 
+Pre-commit hooks that prevent credential leaks, written in rust. A replacement of AWS git-secrets that also has automated provider refreshing. Like `git-secrets`, it adds a regex file to your git config and uses it to scan for secrets when you `git commit`. With `git-find`, it can automatically pull changes to that file before scanning for secrets, ensuring that you have the most up to date regex secret file.
+
+## Comparisons to GitLeaks and AWS Git Secrets
+
+### GitLeaks
+
+- Installing gitleaks gives you the binary/tool to scan for secrets, but it won’t “opt you in” with Git hooks.
+- You need to explicitly configure the hook you want (pre-commit, protect, etc.) in each repository (or via a shared git template).
+- This means a user will need to pip install pre-commit hook, set up a git template for global hooks, and then set up core.hooksPath to apply the hooks to existing repos
+
+### AWS Git-Secrets
+
+- Simple install
+- Does not set up global hooks that apply to ALL repos (existing repos included, see video above)
+- Does not have auto-config capabilities
+
+**If you want to enforce hooks globally across many repos (e.g. for a team), you’ll need to set up a shared Git template directory or use a hook manager. This all handled by `git-find` when you run `git-find install`**
 
 This is really useful for:
 
@@ -81,22 +97,6 @@ To scan the entire git history of a repo, run this within a git repo
 ```bash
 git find scan
 ```
-
-## Comparisons to GitLeaks and AWS Git Secrets
-
-### GitLeaks
-
-- Installing gitleaks gives you the binary/tool to scan for secrets, but it won’t “opt you in” with Git hooks.
-- You need to explicitly configure the hook you want (pre-commit, protect, etc.) in each repository (or via a shared git template).
-- This means a user will need to pip install pre-commit hook, set up a git template for global hooks, and then set up core.hooksPath to apply the hooks to existing repos
-
-### AWS Git-Secrets
-
-- Simple install
-- Does not set up global hooks that apply to ALL repos (existing repos included, see video above)
-- Does not have auto-config capabilities
-
-**If you want to enforce hooks globally across many repos (e.g. for a team), you’ll need to set up a shared Git template directory or use a hook manager. This all handled by `git-find` when you run `git-find install`**
 
 `git-find` simplifies installing global hooks and automating config pulls. It requires ZERO effort or knowledge from newbies that need pre-commit hooks for security scanning.
 
