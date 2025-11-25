@@ -37,6 +37,9 @@ enum Commands {
         /// git config paths
         #[arg(short, long)]
         path: String,
+        /// optional - add local provider
+        #[arg(short, long, default_value_t = false)]
+        local: bool,
     },
 }
 
@@ -76,9 +79,8 @@ fn main() {
                 scan(None); // No regex provided
             }
         }
-        Some(Commands::AddProvider { path }) => {
-            // Convert Option<bool> into a definite bool
-            add_config(path);
+        Some(Commands::AddProvider { path, local }) => {
+            add_config(path, *local);
         }
         None => {}
     }

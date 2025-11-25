@@ -171,7 +171,7 @@ pub fn scan(custom_patterns: Option<Regex>) {
 }
 
 // add provider lists
-pub fn add_config(path: &str) {
+pub fn add_config(path: &str, local: bool) {
     let file = Path::new(path);
     let is_path = file.is_file();
     let mut private = false;
@@ -217,11 +217,20 @@ pub fn add_config(path: &str) {
     if exists {
         println!("key already exists");
     } else {
-        println!("adding key path to git config");
-        Command::new("git")
-            .args(["config", "--global", "--add", key, path])
-            .output()
-            .expect("failed to add a key.");
+        // logic for local path
+        if local {
+            println!("adding path to local");
+            Command::new("git")
+                .args(["config", "--add", key, path])
+                .output()
+                .expect("failed to add a key.");
+        } else {
+            println!("adding key path to global git config");
+            Command::new("git")
+                .args(["config", "--global", "--add", key, path])
+                .output()
+                .expect("failed to add a key.");
+        }
     }
 }
 
