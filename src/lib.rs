@@ -1,10 +1,10 @@
 use colored::Colorize;
 use regex::Regex;
+use std::fs;
 use std::fs::OpenOptions;
 use std::io::{BufWriter, Write};
 use std::path::Path;
 use std::process::Command;
-use std::{env, fs};
 
 use crate::utils::*;
 pub mod utils;
@@ -66,23 +66,14 @@ pub fn install_hooks() {
     // pull a remote secrets regex path and put it in
     // global gitconfig
 
-    let mut git_template = env::home_dir().expect("Could not find home directory");
-    git_template.push(".git-template/hooks");
+    let hooks_dir = determine_global_hooks_dir();
+    let pre_commit = hooks_dir.join("pre-commit");
 
-    if let Err(e) = fs::create_dir_all(&git_template) {
-        eprintln!("Failed to create hooks directory: {}", e);
-        return;
-    }
-
-    git_template.push("pre-commit");
-
-    if git_template.is_file() {
-        println!("pre-commit hook exists; check for existing git-find command");
-
+    if pre_commit.is_file() {
         let hook_line = "git find hook";
 
         // Read the existing file contents
-        let contents = match fs::read_to_string(&git_template) {
+        let contents = match fs::read_to_string(&pre_commit) {
             Ok(c) => c,
             Err(e) => {
                 eprintln!("Failed to read file: {}", e);
@@ -99,7 +90,7 @@ pub fn install_hooks() {
             let file_result = OpenOptions::new()
                 .append(true)
                 .create(true)
-                .open(git_template);
+                .open(&pre_commit);
 
             let file = match file_result {
                 Ok(file) => file,
@@ -115,48 +106,20 @@ pub fn install_hooks() {
     } else {
         println!("pre-commit hook file not found... creating file");
 
-        match fs::File::create(&git_template) {
+        match fs::File::create(&pre_commit) {
             Ok(file) => {
                 let mut writer = BufWriter::new(file);
                 writeln!(writer, "#!/bin/sh").unwrap();
                 writeln!(writer, "# Hook installed by Rust script").unwrap();
                 writeln!(writer, "git find hook").unwrap();
-                println!("Created new pre-commit hook at {:?}", git_template);
+                println!("Created new pre-commit hook at {:?}", pre_commit);
             }
             Err(e) => eprintln!("Failed to create pre-commit hook: {}", e),
         }
     }
-
-    let home_dir = env::home_dir().expect("Could not find home directory");
-
-    let template_dir = home_dir.join(".git-template");
-    let hooks_dir = template_dir.join("hooks");
-    let pc_dir = hooks_dir.join("pre-commit");
-
-    Command::new("git")
-        .args([
-            "config",
-            "--global",
-            "init.templateDir",
-            template_dir.to_str().unwrap(),
-        ])
-        .status()
-        .expect("Failed to set global git template directory");
-
-    // need to configure the git global hooks path
-    Command::new("git")
-        .args([
-            "config",
-            "--global",
-            "core.hooksPath",
-            hooks_dir.to_str().unwrap(),
-        ])
-        .status()
-        .expect("failed to set up global hooks path");
-
     // need to make it executable!
     Command::new("chmod")
-        .args(["+x", pc_dir.to_str().unwrap()])
+        .args(["+x", pre_commit.to_str().unwrap()])
         .status()
         .expect("failed to make hooks path executable");
 }
@@ -244,7 +207,7 @@ pub fn add_config(path: &str) {
 
     // get all existing values
     let output = Command::new("git")
-        .args(["config", "--global", "--get-all", key])
+        .args(["config", "--get-all", key])
         .output()
         .expect("failed to run git config");
 
