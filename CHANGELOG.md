@@ -1,3 +1,19 @@
+# [0.4.0](https://github.com/edenian-prince/rust-secrets/compare/v0.3.9...v0.4.0) (2025-11-30)
+
+
+### Bug Fixes
+
+* dont override existing global hooks ([ec1e8a9](https://github.com/edenian-prince/rust-secrets/commit/ec1e8a96170e9834583680540e01ee6fb1c0b6f2))
+* global hooks will not overwrite local/existing hooks! ([053ad12](https://github.com/edenian-prince/rust-secrets/commit/053ad127cc3407c9a8d825c2ed283cb90a279588))
+* update mod structure, main functions in individual modules ([92d7f65](https://github.com/edenian-prince/rust-secrets/commit/92d7f654f51e88e78ba65a37892eac37125c7dab))
+
+
+### Features
+
+* add --local flag to add-provider for local regex ([6325fe1](https://github.com/edenian-prince/rust-secrets/commit/6325fe1fcc9befa4fb91a613883b6ac35e218466))
+
+
+
 ## [0.3.9](https://github.com/edenian-prince/rust-secrets/compare/v0.3.8...v0.3.9) (2025-11-21)
 
 
@@ -31,16 +47,6 @@
 ### Bug Fixes
 
 * build MUSL so all distros can use the cli ([99e9ecd](https://github.com/edenian-prince/rust-secrets/commit/99e9ecdf24c34f5012e982bca15f9df11487de3e))
-
-
-
-## [0.3.5](https://github.com/edenian-prince/rust-secrets/compare/v0.3.4...v0.3.5) (2025-11-20)
-
-
-### Bug Fixes
-
-* add --list command and clean up cli ([7d8b365](https://github.com/edenian-prince/rust-secrets/commit/7d8b365f74480ba6315e2f623396d803f26bdb55))
-* add powershell install ([46e3eac](https://github.com/edenian-prince/rust-secrets/commit/46e3eacae1db343d6edfc0a048382298bd3365e9))
 
 
 
