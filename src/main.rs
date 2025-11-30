@@ -1,8 +1,10 @@
 use clap::{Parser, Subcommand};
 use regex::Regex;
-use rust_hooks::*;
-
-pub mod utils;
+mod hook;
+mod install;
+mod providers;
+mod scan;
+mod utils;
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -37,6 +39,9 @@ enum Commands {
         /// git config paths
         #[arg(short, long)]
         path: String,
+        /// optional - add local provider
+        #[arg(short, long, default_value_t = false)]
+        local: bool,
     },
 }
 
@@ -46,7 +51,7 @@ fn main() {
     // --list flag to show global providers
     if cli.list {
         // runs git config --global --get-regex git-find.*
-        list_providers();
+        providers::list_providers();
     }
 
     // You can check for the existence of subcommands, and if found use their
@@ -60,25 +65,24 @@ fn main() {
             }
         }
         Some(Commands::Hook {}) => {
-            pre_commit_hook_scan(None);
+            hook::pre_commit_hook_scan(None);
         }
         Some(Commands::Install {}) => {
-            install_hooks();
+            install::install_hooks();
         }
         Some(Commands::Scan { custom_patterns }) => {
             if let Some(pattern_str) = custom_patterns {
                 // Convert the string into a Regex safely
                 match Regex::new(pattern_str) {
-                    Ok(user_regex) => scan(Some(user_regex)),
+                    Ok(user_regex) => scan::scan(Some(user_regex)),
                     Err(e) => eprintln!("Invalid regex: {}", e),
                 }
             } else {
-                scan(None); // No regex provided
+                scan::scan(None); // No regex provided
             }
         }
-        Some(Commands::AddProvider { path }) => {
-            // Convert Option<bool> into a definite bool
-            add_config(path);
+        Some(Commands::AddProvider { path, local }) => {
+            providers::add_config(path, *local);
         }
         None => {}
     }

@@ -26,7 +26,7 @@ pub fn get_staged_content(path: &str) -> Option<String> {
 // Read in the .gitconfig and find the regex file(s), return a pathbuf
 pub fn load_file_patterns() -> Vec<PathBuf> {
     let output = Command::new("git")
-        .args(["config", "--global", "--get-all", "git-find.regex-file"])
+        .args(["config", "--get-all", "git-find.regex-file"])
         .output()
         .expect("failed to find provider");
 
@@ -42,7 +42,7 @@ pub fn load_file_patterns() -> Vec<PathBuf> {
 pub fn load_private_file_patterns() -> Vec<PathBuf> {
     // if private-file doesn't exist, just pass.
     let output = Command::new("git")
-        .args(["config", "--global", "--get-all", "git-find.private-file"])
+        .args(["config", "--get-all", "git-find.private-file"])
         .output()
         .expect("failed to find provider");
 
@@ -125,7 +125,7 @@ pub fn read_patterns() -> Vec<regex::Regex> {
 
             let git_dir = path.parent().unwrap();
 
-            println!("parent path is: {}", git_dir.display());
+            // println!("parent path is: {}", git_dir.display());
 
             let output = Command::new("git")
                 .args([
@@ -138,7 +138,7 @@ pub fn read_patterns() -> Vec<regex::Regex> {
                 .expect("didnt work");
 
             let top_level = String::from_utf8_lossy(&output.stdout).trim().to_string();
-            println!("top level: {}", top_level);
+            // println!("top level: {}", top_level);
 
             Command::new("git")
                 .current_dir(&top_level)
@@ -159,7 +159,7 @@ pub fn read_patterns() -> Vec<regex::Regex> {
 
             match load_regex_from_file(&path) {
                 Ok(regexes) => {
-                    println!("Loaded {} regexes", regexes.len());
+                    // println!("Loaded {} regexes", regexes.len());
                     patterns.extend(regexes);
                 }
                 Err(err) => {
