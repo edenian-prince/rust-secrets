@@ -1,6 +1,77 @@
 # rust-secrets
 
-Pre-commit hooks that prevent credential leaks, written in rust. A replacement of AWS git-secrets that also has automated provider refreshing. Like `git-secrets`, it adds a regex file to your git config and uses it to scan for secrets when you `git commit`. With `git-find`, it can automatically pull changes to that file before scanning for secrets, ensuring that you have the most up to date regex secret file.
+Pre-commit hooks that prevent credential leaks, written in rust. A replacement of AWS git-secrets that also has automated provider refreshing. Like `git-secrets`, it adds a regex file to your git config and uses it to scan for secrets when you `git commit`. With `git-find`, it can automatically pull changes to that file before scanning for secrets, ensuring that you have the most up to date regex secret file. It also automatically sets up a global git config that will apply the hooks to all existing and new repos. It won't overwrite global or local hooks if they exist, just adds to them. This way a system admin can set up hooks and ban lists that can be automatically updated and local users can still have their own ban lists.
+
+## Install 
+
+To install new versions you can follow these steps again and it will update the cli on your machine.
+
+### Linux/WSL
+
+Run this in a bash terminal:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/edenian-prince/rust-secrets/refs/heads/main/install.sh | bash
+```
+
+that will put the cli tool in your .bashrc
+
+then restart your terminal or run 
+
+```bash
+source ~/.bashrc
+```
+
+### Windows
+
+Run this in a PowerShell terminal. It will pull the `install.ps1` script from the repo and install `git-find.exe` to your `C:/USER/.local/bin` path
+
+```PowerShell
+powershell -ExecutionPolicy ByPass -c "irm https://raw.githubusercontent.com/edenian-prince/rust-secrets/refs/heads/main/install.ps1 | iex"
+```
+
+## Post Install Setup
+
+1. Now set up the hooks with 
+
+```bash
+git find install
+```
+
+It will add global git hook paths if needed, but **will not overwrite or destroy already existing global or local hooks**. See `src/install.rs` for the code. (and then restart your shell if using PowerShell)
+
+2. Add a provider/secret ban list.txt
+
+Either a _full_ file path like `~/path/secrets.txt` (can be a path in a git repo) or from github itself like `https://raw.github../secrets.txt`
+
+```bash
+git find add-provider --path /full/path/to/provider
+```
+
+This will prompt you and ask if you want the auto updates. Write Y and it will set it up for you. Whenever the pre-commit hook runs it will automatically pull from that repo so that your regex file is the most up to date. If N is selected, then it will just read the file directly from where you put it and won't run git pull. 
+
+3. Optional - add a provider to just one local repo
+The hook providers are applied to your global git unless you specify putting them into a single repo with the `--local` flag
+
+```bash
+git find add-provider --path /full/path/secret.txt --local
+```
+
+This will put a local hook/secret ban list into your single repo's `.git/hooks/pre-commit` folder. If you already have a hook there it will NOT overwrite it. 
+It will create a new file in .git/hooks/git-find-provider.sh and then call it into the existing pre-commit file if it doesn't already exist.
+
+see `src/providers.rs` for more details
+
+
+### Optional:
+
+To scan the entire git history of a repo, run this within a git repo
+
+```bash
+git find scan
+```
+
+It will scan for all the secrets in your global/local git config. See `src/scan.rs`
 
 ## Comparisons to GitLeaks and AWS Git Secrets
 
@@ -36,67 +107,6 @@ https://private-user-images.githubusercontent.com/113125657/517775645-5c318626-e
 
 - automatically sets up global hooks that work on existing repos. AWS git-secrets was a real pain for this. when you install it you need to configure git to run it on existing repos. a pain for newbie git users
 
-## Install 
-
-### Linux/WSL
-
-Run this in a bash terminal:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/edenian-prince/rust-secrets/refs/heads/main/install.sh | bash
-```
-
-that will put the cli tool in your .bashrc
-
-then restart your terminal or run 
-
-```bash
-source ~/.bashrc
-```
-
-### Windows
-
-Run this in a PowerShell terminal. It will pull the `install.ps1` script from the repo and install `git-find.exe` to your `C:/USER/.local/bin` path
-
-```PowerShell
-powershell -ExecutionPolicy ByPass -c "irm https://raw.githubusercontent.com/edenian-prince/rust-secrets/refs/heads/main/install.ps1 | iex"
-```
-
-## Setup
-
-1. Once installed, run this (and then restart your shell if using PowerShell)
-
-```bash
-git find install
-```
-
-2. Add a secret provider. Can be either a .txt file on your local machine or a raw.github.txt file from github
-
-```bash
-git find add-provider --path /full/path/to/secret.txt
-```
-
-That's it!
-
-
-### Optional:
-
-#### Automatic git find add-provider
-
-If you want an automated github regex file, you must first clone the repo and then run
-
-```bash
-git find add-provider --path /full/path/to/git/clone/secret.txt
-```
-This will prompt you and ask if you want the auto updates. Write Y and it will set it up for you. Whenever the pre-commit hook runs it will automatically pull from that repo so that your regex file is the most up to date.
-
-#### git find scan
-
-To scan the entire git history of a repo, run this within a git repo
-
-```bash
-git find scan
-```
 
 `git-find` simplifies installing global hooks and automating config pulls. It requires ZERO effort or knowledge from newbies that need pre-commit hooks for security scanning.
 
