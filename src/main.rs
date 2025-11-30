@@ -1,7 +1,8 @@
 use clap::{Parser, Subcommand};
+use install::install_hooks;
 use regex::Regex;
 use rust_hooks::*;
-
+pub mod install;
 pub mod utils;
 
 #[derive(Parser)]

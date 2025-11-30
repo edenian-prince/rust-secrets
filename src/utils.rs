@@ -1,8 +1,8 @@
 use regex::Regex;
+use std::fs;
 use std::io::{BufRead, BufReader};
 use std::path::PathBuf;
 use std::process::Command;
-use std::{env, fs};
 
 pub fn get_staged_files() -> Vec<String> {
     let output = Command::new("git")
@@ -169,51 +169,4 @@ pub fn read_patterns() -> Vec<regex::Regex> {
         }
     }
     patterns
-}
-
-pub fn git_config_global_get(key: &str) -> Option<String> {
-    let output = Command::new("git")
-        .args(["config", "--global", "--get", key])
-        .output()
-        .ok()?;
-
-    if !output.status.success() {
-        return None;
-    }
-
-    let val = String::from_utf8_lossy(&output.stdout).trim().to_string();
-    if val.is_empty() { None } else { Some(val) }
-}
-
-pub fn determine_global_hooks_dir() -> PathBuf {
-    // See if user already has a core.hooksPath
-    if let Some(existing) = git_config_global_get("core.hooksPath") {
-        let existing_path = PathBuf::from(existing.trim());
-        println!("Detected existing core.hooksPath at {:?}", existing_path);
-        println!("Will install hooks into this directory (not overriding).");
-        return existing_path;
-    }
-
-    // Otherwise set our own hooks directory
-    let home = env::home_dir().unwrap();
-    let hooks_dir = home.join(".git-hooks");
-
-    fs::create_dir_all(&hooks_dir).expect("Failed to create hooks directory");
-
-    println!(
-        "No global hooksPath found. Setting core.hooksPath to {:?}",
-        hooks_dir
-    );
-
-    Command::new("git")
-        .args([
-            "config",
-            "--global",
-            "core.hooksPath",
-            hooks_dir.to_str().unwrap(),
-        ])
-        .status()
-        .expect("Failed to set global core.hooksPath");
-
-    hooks_dir
 }

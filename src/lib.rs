@@ -1,8 +1,5 @@
 use colored::Colorize;
 use regex::Regex;
-use std::fs;
-use std::fs::OpenOptions;
-use std::io::{BufWriter, Write};
 use std::path::Path;
 use std::process::Command;
 
@@ -60,68 +57,6 @@ pub fn pre_commit_hook_scan(custom_patterns: Option<Regex>) {
         println!("{}", "No secrets found.".green().bold());
         std::process::exit(0);
     }
-}
-
-pub fn install_hooks() {
-    // pull a remote secrets regex path and put it in
-    // global gitconfig
-
-    let hooks_dir = determine_global_hooks_dir();
-    let pre_commit = hooks_dir.join("pre-commit");
-
-    if pre_commit.is_file() {
-        let hook_line = "git find hook";
-
-        // Read the existing file contents
-        let contents = match fs::read_to_string(&pre_commit) {
-            Ok(c) => c,
-            Err(e) => {
-                eprintln!("Failed to read file: {}", e);
-                return;
-            }
-        };
-
-        // Only append if the line doesn't already exist
-        if contents.contains(hook_line) {
-            println!("Hook already exists, skipping append");
-        } else {
-            println!("Adding hook to file");
-
-            let file_result = OpenOptions::new()
-                .append(true)
-                .create(true)
-                .open(&pre_commit);
-
-            let file = match file_result {
-                Ok(file) => file,
-                Err(e) => {
-                    eprintln!("Failed to open file: {}", e);
-                    return;
-                }
-            };
-
-            let mut writer = BufWriter::new(file);
-            writeln!(writer, "\ngit find hook").unwrap();
-        }
-    } else {
-        println!("pre-commit hook file not found... creating file");
-
-        match fs::File::create(&pre_commit) {
-            Ok(file) => {
-                let mut writer = BufWriter::new(file);
-                writeln!(writer, "#!/bin/sh").unwrap();
-                writeln!(writer, "# Hook installed by Rust script").unwrap();
-                writeln!(writer, "git find hook").unwrap();
-                println!("Created new pre-commit hook at {:?}", pre_commit);
-            }
-            Err(e) => eprintln!("Failed to create pre-commit hook: {}", e),
-        }
-    }
-    // need to make it executable!
-    Command::new("chmod")
-        .args(["+x", pre_commit.to_str().unwrap()])
-        .status()
-        .expect("failed to make hooks path executable");
 }
 
 pub fn scan(custom_patterns: Option<Regex>) {
