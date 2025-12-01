@@ -1,5 +1,6 @@
 use std::fs::OpenOptions;
 use std::io::Write;
+use std::path::Path;
 use std::path::PathBuf;
 use std::process::Command;
 use std::{env, fs};
@@ -115,6 +116,21 @@ fi
     .to_string()
 }
 
+#[cfg(unix)]
+fn make_executable(path: &Path) {
+    use std::process::Command;
+    Command::new("chmod")
+        .args(["+x", path.to_str().unwrap()])
+        .status()
+        .expect("failed to chmod file");
+}
+
+#[allow(dead_code)]
+#[cfg(not(unix))]
+fn make_executable(_path: &Path) {
+    // no-op on Windows
+}
+
 fn handle_global_pre_commit(path: &PathBuf) {
     if !path.exists() {
         println!("pre-commit does not exist, creating it");
@@ -138,11 +154,7 @@ fn handle_global_pre_commit(path: &PathBuf) {
             println!("git-find already included, skipping");
         }
     }
-
-    Command::new("chmod")
-        .args(["+x", path.to_str().unwrap()])
-        .status()
-        .expect("failed to chmod hook");
+    make_executable(path);
 }
 
 fn ensure_template_exists(path: &PathBuf) {
@@ -150,11 +162,7 @@ fn ensure_template_exists(path: &PathBuf) {
         println!("creating git-find-global-hook.sh");
         fs::write(path, global_hook_script()).expect("failed to write template script");
     }
-
-    Command::new("chmod")
-        .args(["+x", path.to_str().unwrap()])
-        .status()
-        .expect("failed to chmod template");
+    make_executable(path);
 }
 
 pub fn install_hooks() {
