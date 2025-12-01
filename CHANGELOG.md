@@ -1,3 +1,12 @@
+## [0.4.1](https://github.com/edenian-prince/rust-secrets/compare/v0.4.0...v0.4.1) (2025-12-01)
+
+
+### Bug Fixes
+
+* ignore chmod command for windows users ([08e0491](https://github.com/edenian-prince/rust-secrets/commit/08e049133435c972659b3d10601e1abfd4efa12a))
+
+
+
 # [0.4.0](https://github.com/edenian-prince/rust-secrets/compare/v0.3.9...v0.4.0) (2025-11-30)
 
 
@@ -38,15 +47,6 @@
 ### Bug Fixes
 
 * Update release.yml ([28d5119](https://github.com/edenian-prince/rust-secrets/commit/28d5119de4601423230be8af9a780456821bfbc6))
-
-
-
-## [0.3.6](https://github.com/edenian-prince/rust-secrets/compare/v0.3.5...v0.3.6) (2025-11-21)
-
-
-### Bug Fixes
-
-* build MUSL so all distros can use the cli ([99e9ecd](https://github.com/edenian-prince/rust-secrets/commit/99e9ecdf24c34f5012e982bca15f9df11487de3e))
 
 
 
