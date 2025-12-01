@@ -38,7 +38,23 @@ powershell -ExecutionPolicy ByPass -c "irm https://raw.githubusercontent.com/ede
 git find install
 ```
 
-It will add global git hook paths if needed, but **will not overwrite or destroy already existing global or local hooks**. See `src/install.rs` for the code. (and then restart your shell if using PowerShell)
+It will add global git hook paths if needed, but **will not overwrite or destroy already existing global or local hooks**. See `src/install.rs` for the code. tl;dr - It will create a new file in ~/.git-hooks/git-find-global-hook.sh and then call it into the existing `~/.git-hooks/pre-commit` file if it doesn't already exist. If it does exist, it will just add some code to call in the `git-find-global-hook.sh` script
+
+```bash
+!/bin/sh
+# Global pre-commit hook (git-find)
+
+TEMPLATE="$HOME/.git-hooks/git-find-global-hook.sh"
+
+if [ -f "$TEMPLATE" ] && [ -x "$TEMPLATE" ]; then
+    "$TEMPLATE" "$@"
+    exit $?
+fi
+
+exit 0
+```
+
+(and then restart your shell if using PowerShell)
 
 2. Add a provider/secret ban list.txt
 
@@ -51,14 +67,13 @@ git find add-provider --path /full/path/to/provider
 This will prompt you and ask if you want the auto updates. Write Y and it will set it up for you. Whenever the pre-commit hook runs it will automatically pull from that repo so that your regex file is the most up to date. If N is selected, then it will just read the file directly from where you put it and won't run git pull. 
 
 3. Optional - add a provider to just one local repo
-The hook providers are applied to your global git unless you specify putting them into a single repo with the `--local` flag
+The hook providers are applied to your global git (with `git config --global --add`) unless you specify putting them into a single repo with the `--local` flag
 
 ```bash
 git find add-provider --path /full/path/secret.txt --local
 ```
 
-This will put a local hook/secret ban list into your single repo's `.git/hooks/pre-commit` folder. If you already have a hook there it will NOT overwrite it. 
-It will create a new file in .git/hooks/git-find-provider.sh and then call it into the existing pre-commit file if it doesn't already exist.
+This will put a local hook/secret ban list into your single repo's git config (with `git config --add`). You can check with `git config --list`. If you already have a hook there it will NOT overwrite it. 
 
 see `src/providers.rs` for more details
 
