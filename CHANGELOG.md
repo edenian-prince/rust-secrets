@@ -1,3 +1,12 @@
+# [0.5.0](https://github.com/edenian-prince/rust-secrets/compare/v0.4.1...v0.5.0) (2026-07-01)
+
+
+### Features
+
+* scan an org and/or multiple repos at once ([79a80ce](https://github.com/edenian-prince/rust-secrets/commit/79a80ce34fd7a8d45e126e418264345bae9bb0de))
+
+
+
 ## [0.4.1](https://github.com/edenian-prince/rust-secrets/compare/v0.4.0...v0.4.1) (2025-12-01)
 
 
@@ -38,15 +47,6 @@
 ### Bug Fixes
 
 * install.sh ([399cd0f](https://github.com/edenian-prince/rust-secrets/commit/399cd0f9ffc8c701dfce8132fc8d68b49c00784d))
-
-
-
-## [0.3.7](https://github.com/edenian-prince/rust-secrets/compare/v0.3.6...v0.3.7) (2025-11-21)
-
-
-### Bug Fixes
-
-* Update release.yml ([28d5119](https://github.com/edenian-prince/rust-secrets/commit/28d5119de4601423230be8af9a780456821bfbc6))
 
 
 
