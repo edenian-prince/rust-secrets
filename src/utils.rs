@@ -1,7 +1,7 @@
 use regex::Regex;
 use std::fs;
-use std::io::{BufRead, BufReader};
 use std::path::PathBuf;
+use std::io::{BufRead, BufReader};
 use std::process::Command;
 
 pub fn get_staged_files() -> Vec<String> {

@@ -43,6 +43,17 @@ enum Commands {
         #[arg(short, long, default_value_t = false)]
         local: bool,
     },
+    /// add a regex file to global git config
+    ScanOrg {
+        /// git org/repo paths (use txt file)
+        #[arg(short, long)]
+        repofile: String,
+        /// optional custom regex
+        #[arg(short, long)]
+        custom_patterns: Option<String>,
+    },
+
+
 }
 
 fn main() {
@@ -83,6 +94,17 @@ fn main() {
         }
         Some(Commands::AddProvider { path, local }) => {
             providers::add_config(path, *local);
+        }
+        Some(Commands::ScanOrg { repofile, custom_patterns }) => {
+            if let Some(pattern_str) = custom_patterns {
+                // Convert the string into a Regex safely
+                match Regex::new(pattern_str) {
+                    Ok(user_regex) => scan::scan_org(repofile,Some(user_regex)),
+                    Err(e) => eprintln!("Invalid regex: {}", e),
+                }
+            } else {
+                scan::scan_org(repofile, None); // No regex provided
+            }
         }
         None => {}
     }
